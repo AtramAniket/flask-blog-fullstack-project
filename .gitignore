@@ -1,0 +1,11 @@
+# Database
+instance/
+
+# Virtual environment 
+.venv
+
+# Secrets file
+.env
+
+# Pthon runtime cache
+__pycache__/
