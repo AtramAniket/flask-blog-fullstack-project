@@ -1,9 +1,10 @@
 from app.extensions import db
+from flask_login import UserMixin
 from sqlalchemy import String, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 
 	__tablename__ = "users"
 

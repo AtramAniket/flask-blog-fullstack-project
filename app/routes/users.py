@@ -3,6 +3,7 @@ from app.models.user import User
 from sqlalchemy.exc import IntegrityError
 from app.forms.login_form import LoginForm
 from app.forms.registration_form import RegistrationForm
+from flask_login import login_user, logout_user, current_user, login_required
 from flask import Blueprint, render_template, url_for, redirect, request, flash
 
 users_bp = Blueprint('users', __name__)
@@ -23,15 +24,24 @@ def login():
 			user = User.query.filter_by(email=email).first()
 
 			if user and user.check_password(password):
-				print("user logged in successfully")
+				login_user(user)
+				flash(f"Welcome back {email}", "success")
+				return redirect(url_for("posts.home"))
 			else:
-				print("Sorry no user found")
+				flash(f"User not found", "danger")
+				return redirect(url_for("users.login"))
 
 			print(email)
 			print(password)
 
 	return render_template('login.html', form=form)
 
+@users_bp.route('/logout')
+@login_required
+def logout():
+	logout_user()
+	flash("You have been logged out", "info")
+	return redirect(url_for("users.login"))
 
 @users_bp.route('/register', methods=['GET', 'POST'])
 def register():
