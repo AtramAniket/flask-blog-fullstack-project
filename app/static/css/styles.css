@@ -1,0 +1,36 @@
+.hero{
+height:70vh;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+text-align:center;
+}
+
+.hero-home{
+background:url('https://images.unsplash.com/photo-1772289239052-7bbbd9bda160') center/cover no-repeat;
+}
+
+.hero-new-post{
+background:url('https://images.unsplash.com/photo-1772475385350-d130ebe22bf5') center/cover no-repeat;
+}
+
+.mainpage-login-form{
+	margin: 10% auto;
+}
+
+
+.hero h1{
+font-size:3rem;
+font-weight:bold;
+}
+
+footer{
+background:#111;
+color:white;
+padding:20px;
+text-align:center;
+/*position: sticky;*/
+bottom: 0;
+width: 100%;
+}

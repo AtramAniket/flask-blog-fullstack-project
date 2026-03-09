@@ -1,6 +1,6 @@
 from datetime import datetime
 from app.extensions import db
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String, Integer, DateTime, func, Text
 
 class Post(db.Model):

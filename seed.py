@@ -1,12 +1,13 @@
 from app import create_app
 from app.extensions import db
 from app.models.post import Post
+from app.models.user import User
 
 app = create_app()
 
 first_post = Post(
 	title="My first post",
-	subtitle="This is my forst post added to test API",
+	subtitle="This is third post addded with a really long subtitle to check if the card length is going to make the card large or small based on text length",
 	body="Hello there. I am first blog post. I hope you are having a great time",
 	author="Aniket Atram",
 	img_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F31193.jpg&f=1&nofb=1&ipt=709cc8ab8592a2cc2a1ef595570efa79d67a389d716869170a70efd6ef432e79")
@@ -25,11 +26,15 @@ third_post = Post(
 	author="Aniket Atram",
 	img_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapers.com%2Fimages%2Fhd%2Friver-mountain-most-beautiful-nature-hdb30wtkjbn08xlf.jpg&f=1&nofb=1&ipt=d565c208c0dddd96060a6f963695516068df4839bbc7583b4001b1df0f0a635a")
 
+# first_user = User(username="Aniket Atram", email="example@email.com", password="123456", role="admin")
+
+# second_user = User(username="John Doe", email="example2@email.com", password="1234567", role="user")
+
 with app.app_context():
 
-	db.session.query(Post).delete()
-	db.session.add(first_post)
-	db.session.add(second_post)
-	db.session.add(third_post)
+	db.session.query(User).delete()
+	# db.session.add(first_user)
+	# db.session.add(second_user)
+	# db.session.add(third_post)
 	db.session.commit()
 	print("Data added successfully")
