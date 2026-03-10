@@ -26,15 +26,15 @@ third_post = Post(
 	author="Aniket Atram",
 	img_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapers.com%2Fimages%2Fhd%2Friver-mountain-most-beautiful-nature-hdb30wtkjbn08xlf.jpg&f=1&nofb=1&ipt=d565c208c0dddd96060a6f963695516068df4839bbc7583b4001b1df0f0a635a")
 
-# first_user = User(username="Aniket Atram", email="example@email.com", password="123456", role="admin")
+first_user = User(username="Aniket Atram", email="example@email.com", password="pbkdf2:sha256:600000$vvrGy3zH$d04085bc7ee7889d8de1efbbb8b52fe1ab1be461134c74b5ea595a7fdd575b23", role="admin")
 
-# second_user = User(username="John Doe", email="example2@email.com", password="1234567", role="user")
+second_user = User(username="John Doe", email="example2@email.com", password="pbkdf2:sha256:600000$iptdyQI7$2dac45e19672665b2a29dff52c8c9506de058b3e02bf10701a331595e68e4282", role="user")
 
 with app.app_context():
 
 	db.session.query(User).delete()
-	# db.session.add(first_user)
-	# db.session.add(second_user)
+	db.session.add(first_user)
+	db.session.add(second_user)
 	# db.session.add(third_post)
 	db.session.commit()
 	print("Data added successfully")

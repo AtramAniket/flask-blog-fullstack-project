@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}All Posts - John Doe's Blog{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">All Posts</h1>
+
+{% for post in posts.items %}
+  <div class="post-preview mb-4 pb-3 border-bottom">
+    <a href="{{ url_for('posts.view_post', post_id=post.id) }}" class="text-decoration-none">
+      <h2 class="h4">{{ post.title }}</h2>
+      <p class="text-muted">{{ post.subtitle }}</p>
+    </a>
+    <p class="text-muted small">By {{ post.author }} on {{ post.created_at.strftime('%B %d, %Y') }}</p>
+  </div>
+{% else %}
+  <p>No posts to show.</p>
+{% endfor %}
+
+<!-- Pagination -->
+<nav aria-label="Post navigation">
+  <ul class="pagination justify-content-center">
+
+    <!-- Previous Page -->
+    {% if posts.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('posts.all_posts', page=posts.prev_num) }}">← Previous</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">← Previous</span>
+      </li>
+    {% endif %}
+
+    <!-- Page numbers -->
+    {% for page_num in posts.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+      {% if page_num %}
+        {% if page_num == posts.page %}
+          <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('posts.all_posts', page=page_num) }}">{{ page_num }}</a>
+          </li>
+        {% endif %}
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Next Page -->
+    {% if posts.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('posts.all_posts', page=posts.next_num) }}">Next →</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Next →</span>
+      </li>
+    {% endif %}
+
+  </ul>
+</nav>
+
+{% endblock %}

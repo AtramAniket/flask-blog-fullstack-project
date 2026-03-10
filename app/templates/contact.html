@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - John Doe's Blog{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Contact Me</h1>
+
+<form method="post" action="{{ url_for('posts.contact') }}" novalidate>
+  
+  {{ form.hidden_tag() }}
+
+  <div class="mb-3">
+    {{ form.name.label(class="form-label") }}
+    {{ form.name(class="form-control", placeholder="Your name") }}
+    {% for error in form.name.errors %}
+      <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.email.label(class="form-label") }}
+    {{ form.email(class="form-control", placeholder="Your email") }}
+    {% for error in form.email.errors %}
+      <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.message.label(class="form-label") }}
+    {{ form.message(class="form-control", placeholder="Your message", rows=6) }}
+    {% for error in form.message.errors %}
+      <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+  </div>
+
+  {{ form.submit(class="btn btn-success w-100") }}
+
+  <!-- <button type="submit" class="btn btn-primary">Send</button> -->
+</form>
+{% endblock %}

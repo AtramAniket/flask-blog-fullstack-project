@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - John Doe's Blog{% endblock %}
+
+{% block content %}
+
+{# --- Admin Buttons (Delete / Edit) --- #}
+{% if current_user.is_authenticated and current_user.role == "admin" %}
+<div class="d-flex justify-content-end mb-3 gap-2">
+    <form method="post" action="{{ url_for('posts.delete_post', post_id=post.id) }}"
+          onsubmit="return confirm('Are you sure you want to delete this post?');">
+        <button class="btn btn-sm btn-danger">Delete Post</button>
+    </form>
+    <a class="btn btn-sm btn-warning" href="{{ url_for('posts.edit_post', post_id=post.id) }}">Edit</a>
+</div>
+{% endif %}
+
+<article class="mb-5">
+    {# --- Post Header --- #}
+    <header class="mb-4 text-center">
+        <h1 class="fw-bold">{{ post.title }}</h1>
+        <p class="text-muted">By {{ post.author }} on {{ post.created_at.strftime('%B %d, %Y') }}</p>
+        {% if post.subtitle %}
+        <p class="text-muted h5">{{ post.subtitle }}</p>
+        {% endif %}
+    </header>
+
+    {# --- Hero / Featured Image --- #}
+    {% if post.img_url %}
+    <img src="{{ post.img_url }}" alt="Post image" class="img-fluid rounded mx-auto d-block mb-4" />
+    {% endif %}
+
+    {# --- CKEditor Post Body --- #}
+    <section class="blog-post-content mx-auto">
+        {{ post.body | safe }}
+    </section>
+</article>
+
+{# --- Navigation Buttons (Previous / Next) --- #}
+<div class="d-flex justify-content-between mt-5">
+    {% if previous_post %}
+    <a href="{{ url_for('posts.view_post', post_id=previous_post.id) }}" class="btn btn-outline-primary">← Previous Post</a>
+    {% else %}
+    <span></span> {# placeholder to keep Next button right-aligned #}
+    {% endif %}
+
+    {% if next_post %}
+    <a href="{{ url_for('posts.view_post', post_id=next_post.id) }}" class="btn btn-primary ms-auto">Next Post →</a>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from app.forms.login_form import LoginForm
 from app.forms.registration_form import RegistrationForm
 from flask_login import login_user, logout_user, current_user, login_required
-from flask import Blueprint, render_template, url_for, redirect, request, flash
+from flask import Blueprint, render_template, url_for, redirect, request, flash, abort
 
 users_bp = Blueprint('users', __name__)
 
@@ -30,9 +30,6 @@ def login():
 			else:
 				flash(f"User not found", "danger")
 				return redirect(url_for("users.login"))
-
-			print(email)
-			print(password)
 
 	return render_template('login.html', form=form)
 
@@ -67,6 +64,9 @@ def register():
 			db.session.add(new_user)
 			try:
 				db.session.commit()
+				login_user(new_user)
+				flash(f"Welcome {new_user.username}", "success")
+				return redirect(url_for('posts.home'))
 			except IntegrityError:
 				db.session.rollback()
 				flash("Unexpected DB error", "danger")
@@ -76,3 +76,29 @@ def register():
 				return redirect(url_for('users.login'))
 
 	return render_template('register.html', form=form)
+
+@users_bp.route('/show')
+@login_required
+def show_users():
+    if current_user.role != "admin":
+        return render_template('404.html')
+
+    # Only show users with role "user"
+    users = User.query.filter_by(role="user").order_by(User.username.asc()).all()
+    return render_template("users.html", users=users)
+
+
+@users_bp.route('/delete/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if current_user.role != "admin":
+        return render_template('404.html')
+
+    user = User.query.get_or_404(user_id)
+    
+    if user.role != "user":  # prevent admin deletion
+        return render_template('404.html')
+
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('users.show_users'))

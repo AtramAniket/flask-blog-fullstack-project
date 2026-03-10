@@ -8,6 +8,10 @@ from .extensions import db, bootstrap, ckeditor, login_manager
 def load_user(user_id):
     return db.get_or_404(User, user_id)
 
+# @app.context_processor
+# def inject_current_year():
+#     return {'current_year': datetime.utcnow().year}
+
 def create_app():
 
 	app = Flask(__name__)
