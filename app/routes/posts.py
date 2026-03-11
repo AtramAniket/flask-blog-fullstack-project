@@ -12,7 +12,7 @@ posts_bp = Blueprint('posts', __name__)
 @posts_bp.route('/')
 @login_required
 def home():
-	all_posts = Post.query.order_by(Post.created_at.desc()).limit(4)
+	all_posts = Post.query.order_by(Post.id.desc()).limit(4)
 	print(all_posts)
 	return render_template("index.html", posts=all_posts)
 

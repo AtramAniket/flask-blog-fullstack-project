@@ -21,7 +21,7 @@
         <h1 class="fw-bold">{{ post.title }}</h1>
         <p class="text-muted">By {{ post.author }} on {{ post.created_at.strftime('%B %d, %Y') }}</p>
         {% if post.subtitle %}
-        <p class="text-muted h5">{{ post.subtitle }}</p>
+        <p class="text-muted h3">{{ post.subtitle }}</p>
         {% endif %}
     </header>
 
@@ -31,7 +31,7 @@
     {% endif %}
 
     {# --- CKEditor Post Body --- #}
-    <section class="blog-post-content mx-auto">
+    <section class="blog-post-content mx-auto fs-4 lh-lg">
         {{ post.body | safe }}
     </section>
 </article>
