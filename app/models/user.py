@@ -1,7 +1,8 @@
+import hashlib
 from app.extensions import db
 from flask_login import UserMixin
 from sqlalchemy import String, Integer
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model, UserMixin):
@@ -17,10 +18,19 @@ class User(db.Model, UserMixin):
 	password: Mapped[str] = mapped_column(String(100), nullable=False)
 	role: Mapped[str] = mapped_column(String(100), nullable=False, default="user")
 
+	comments: Mapped[list["Comment"]] = relationship(back_populates="author", cascade="all, delete-orphan")
+
+
 	def set_password(self, raw_password_text):
 
 		self.password = generate_password_hash(raw_password_text, method="pbkdf2:sha256:600000", salt_length=8)
 
+
 	def check_password(self, raw_password_text):
 
 		return check_password_hash(self.password, raw_password_text)
+
+
+	def avatar(self, size: int = 60) -> str:
+		digest = hashlib.md5(self.email.lower().encode("utf-8")).hexdigest()
+		return f"https://www.gravatar.com/avatar/{digest}?s={size}&d=retro"

@@ -33,12 +33,14 @@ def login():
 
 	return render_template('login.html', form=form)
 
+
 @users_bp.route('/logout')
 @login_required
 def logout():
 	logout_user()
 	flash("You have been logged out", "info")
 	return redirect(url_for("users.login"))
+
 
 @users_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -76,6 +78,7 @@ def register():
 				return redirect(url_for('users.login'))
 
 	return render_template('register.html', form=form)
+
 
 @users_bp.route('/show')
 @login_required

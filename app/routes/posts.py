@@ -1,12 +1,13 @@
-from flask import Blueprint, render_template, url_for, redirect, request, flash
 from app.extensions import db
 from app.models.post import Post
+from app.models.comment import Comment
 from app.forms.post_form import PostForm
 from app.forms.contact_form import ContactForm
+from app.forms.comment_form import CommentForm
 from flask_login import logout_user, current_user, login_required
+from flask import Blueprint, render_template, url_for, redirect, request, flash, abort
 
 posts_bp = Blueprint('posts', __name__)
-
 
 @posts_bp.route('/')
 @login_required
@@ -43,19 +44,42 @@ def create_new_post():
 
 	return render_template("post_form.html", form = create_new_post_form)
 
+
 @posts_bp.route('/post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def view_post(post_id):
-	
-	post = db.session.execute(db.select(Post).where(Post.id == post_id)).scalar()
-	
-	# Next post = next **older** post (smaller id)
-	next_post = Post.query.filter(Post.id < post.id).order_by(Post.id.desc()).first()
 
-	# Previous post = next **newer** post (larger id)
-	previous_post = Post.query.filter(Post.id > post.id).order_by(Post.id.asc()).first()
+    post = db.session.execute(
+        db.select(Post).where(Post.id == post_id)
+    ).scalar_one_or_none()
 
-	return render_template('post.html', post = post, previous_post = previous_post ,next_post = next_post )
+    if not post:
+        abort(404)
+
+    form = CommentForm()
+
+    if form.validate_on_submit():
+
+        new_comment = Comment(
+            text=form.text.data,
+            author=current_user,
+            post=post
+        )
+
+        db.session.add(new_comment)
+        db.session.commit()
+
+        flash("Comment added!", "success")
+
+        return redirect(url_for('posts.view_post', post_id=post.id))
+
+    # Next post = next older post
+    next_post = db.session.execute(db.select(Post).where(Post.id < post.id).order_by(Post.id.desc())).scalars().first()
+
+    # Previous post = next newer post
+    previous_post = db.session.execute(db.select(Post).where(Post.id > post.id).order_by(Post.id.asc())).scalars().first()
+
+    return render_template("post.html", post=post, form=form, previous_post=previous_post, next_post=next_post)
 
 
 @posts_bp.route('/delete/<int:post_id>', methods=['GET', 'POST'])
@@ -69,7 +93,6 @@ def delete_post(post_id):
     db.session.commit()
     flash('Post deleted successfully!', 'success')
     return redirect(url_for('posts.home'))
-
 
 
 @posts_bp.route('/edit_post/<int:post_id>', methods=['GET', 'POST'])
@@ -93,6 +116,7 @@ def edit_post(post_id):
 @posts_bp.route('/about')
 def about():
 	return render_template("about_me.html")
+
 
 @posts_bp.route('/contact', methods=['GET', 'POST'])
 def contact():

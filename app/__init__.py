@@ -1,8 +1,10 @@
 from flask import Flask
 from .models.user import User
+from .models.post import Post
+from .models.comment import Comment
 from .routes.posts import posts_bp
 from .routes.users import users_bp
-from .extensions import db, bootstrap, ckeditor, login_manager
+from .extensions import db, bootstrap, ckeditor, login_manager, migrate
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -22,9 +24,13 @@ def create_app():
 
 	app.register_blueprint(users_bp, url_prefix="/users")
 
+	ckeditor.init_app(app)
+
 	bootstrap.init_app(app)
 
-	ckeditor.init_app(app)
+	from app import models
+
+	migrate.init_app(app, db)
 
 	login_manager.init_app(app)
 

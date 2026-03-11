@@ -36,6 +36,33 @@
     </section>
 </article>
 
+<h3>Comments</h3>
+
+{% if current_user.is_authenticated %}
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.text(class="form-control", rows=3) }}
+    <button class="btn btn-primary mt-2">Add Comment</button>
+</form>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to leave a comment.</p>
+{% endif %}
+
+<hr>
+
+{% for comment in post.comments %}
+<div class="d-flex mb-4">
+    <img src="{{ comment.author.avatar(60) }}" class="rounded-circle me-3">
+    <div>
+        <strong>{{ comment.author.username }}</strong>
+        <small class="text-muted">{{ comment.created_at.strftime('%b %d, %Y') }}</small>
+        <p>{{ comment.text }}</p>
+    </div>
+</div>
+{% else %}
+<p>No comments yet.</p>
+{% endfor %}
+
 {# --- Navigation Buttons (Previous / Next) --- #}
 <div class="d-flex justify-content-between mt-5">
     {% if previous_post %}
